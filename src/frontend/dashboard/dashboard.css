@@ -1,4 +1,17 @@
 .custom-dashboard-title {
-    color: #6E00D8; /* Cor personalizada para o título do Dashboard */
-  }
-  
+  color: #6E00D8;
+}
+
+.card {
+  margin: 1;
+  margin-left: 100px;
+}
+
+.card-body {
+  padding: 1;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}

@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './dashboard.css'
+import './dashboard.css';
 import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [tickets, setTickets] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    // Carregar os tickets do backend ao carregar a página
     const token = localStorage.getItem('token');
     if (token) {
       loadTickets(token);
     } else {
-      navigate('/login')
+      navigate('/login');
       console.error('Token não encontrado. Usuário não autenticado.');
     }
-  }, []);
+  }, [navigate]);
 
   const loadTickets = async (token) => {
     try {
@@ -27,7 +26,9 @@ function Dashboard() {
           Authorization: `Bearer ${token}`,
         },
       });
-      setTickets(response.data);
+      console.log('Resposta da API:', response.data);
+      const activeTickets = response.data.filter(ticket => ticket.ativo !== 0);
+      setTickets(activeTickets);
     } catch (error) {
       console.error('Erro ao carregar tickets:', error);
     }
@@ -43,7 +44,9 @@ function Dashboard() {
             Authorization: `Bearer ${token}`,
           },
         });
-        setTickets(response.data);
+        console.log('Resposta da API (pesquisa):', response.data);
+        const activeTickets = response.data.filter(ticket => ticket.ativo !== 0);
+        setTickets(activeTickets);
       } catch (error) {
         console.error('Erro ao buscar tickets:', error);
       }
@@ -52,26 +55,46 @@ function Dashboard() {
     }
   };
 
-  const handleRespond = (ticketId) => {
-    // Implementar redirecionamento usando API do WhatsApp
-    console.log('Responder ticket com ID:', ticketId);
+  const handleRespond = (ticket) => {
+    const phoneNumber = ticket.whatsapp;
+    const message = `Olá, ${ticket.nome}! Recebemos um ticket sobre ${ticket.produto}, por favor nos forneça mais informações sobre o ocorrido.`;
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
-  const handleEditStatus = (ticketId) => {
-    // Implementar lógica para editar status do ticket
-    console.log('Editar status do ticket com ID:', ticketId);
+  const handleEditStatus = (id) => {
+    console.log('Editar status do ticket com ID:', id);
   };
 
-  const handleDeleteTicket = (ticketId) => {
-    // Implementar lógica para excluir/inativar ticket
-    console.log('Excluir ticket com ID:', ticketId);
+  const handleDeleteTicket = async (id) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        await axios.patch(`http://localhost:3000/ticket/${id}`, { ativo: 0 }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        // Atualizar a lista de tickets após a exclusão
+        setTickets(tickets.filter(ticket => ticket.idticket !== id));
+      } catch (error) {
+        console.error('Erro ao excluir ticket:', error);
+      }
+    } else {
+      console.error('Token não encontrado. Usuário não autenticado.');
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   return (
     <div className="container-fluid py-4">
       <div className="row">
         <div className="col-md-8">
-        <h1 className="custom-dashboard-title">Dashboard</h1>
+          <h1 className="custom-dashboard-title" style={{ color: '#6E00D8' }}>Dashboard</h1>
         </div>
         <div className="col-md-4">
           <form onSubmit={handleSearch} className="d-flex">
@@ -89,23 +112,26 @@ function Dashboard() {
 
       <div className="row mt-4">
         {tickets.map((ticket) => (
-          <div key={ticket.id} className="col-md-4 mb-4">
-            <div className="card">
+          <div key={ticket.id} className="col-sm-6 col-md-4 mb-3">
+            <div className="card h-100">
               <div className="card-body">
                 <h5 className="card-title">{ticket.nome}</h5>
                 <p className="card-text">Produto: {ticket.produto}</p>
-                <p className="card-text">Data: {ticket.data}</p>
+                <p className="card-text">Data: {new Date(ticket.data).toLocaleDateString()}</p>
                 <p className="card-text">WhatsApp: {ticket.whatsapp}</p>
                 <p className="card-text">Mensagem: {ticket.mensagem}</p>
                 <div className="d-flex justify-content-between">
-                  <button onClick={() => handleRespond(ticket.id)} className="btn btn-primary">Responder</button>
-                  <button onClick={() => handleEditStatus(ticket.id)} className="btn btn-secondary">Editar Status</button>
-                  <button onClick={() => handleDeleteTicket(ticket.id)} className="btn btn-danger">Excluir</button>
+                  <button onClick={() => handleRespond(ticket)} className="btn btn-primary btn-sm">Responder</button>
+                  <button onClick={() => handleEditStatus(ticket.id)} className="btn btn-secondary btn-sm">Editar Status</button>
+                  <button onClick={() => handleDeleteTicket(ticket.id)} className="btn btn-danger btn-sm">Excluir</button>
                 </div>
               </div>
             </div>
           </div>
         ))}
+      </div>
+      <div className="fixed-bottom d-flex justify-content-end p-3">
+        <button onClick={handleLogout} className="btn btn-danger">Logout</button>
       </div>
     </div>
   );

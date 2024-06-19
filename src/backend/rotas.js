@@ -1,5 +1,3 @@
-// rotas.js
-
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
@@ -30,13 +28,11 @@ const verifyToken = (req, res, next) => {
     });
 };
 
-// Rota para autenticação (login)
 app.post('/auth/login', loginUser);
 
-// Rotas protegidas por autenticação JWT
-app.get('/ticket', verifyToken, getAllTicket);
+app.get('/ticket', getAllTicket);
 app.post('/ticket', createTicket);
-app.put('/ticket/:id', verifyToken, updateTicket);
+app.put('/ticket/:id', updateTicket);
 app.delete('/ticket/:id', verifyToken, deleteTicket);
 
 app.listen(3000, () => {

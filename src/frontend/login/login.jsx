@@ -1,12 +1,11 @@
-// login.jsx
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './login.css';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -22,21 +21,21 @@ const navigate = useNavigate();
 
       const { token } = response.data;
       console.log('Token JWT:', token);
-      localStorage.setItem('token', token);
-      navigate("/dashboard");
-      
+      localStorage.setItem('token', response.data.token);
+
       // Limpa o formulário após o login
       setEmail('');
       setPassword('');
       setError('');
+      navigate('/dashboard');
     } catch (error) {
-      console.error('Erro ao fazer login:', error);
-      if (error.response && error.response.data && error.response.data.message) {
-        setError(error.response.data.message);
-      } else {
-        setError('Erro ao fazer login. Tente novamente mais tarde.');
-      }
+      console.error('Erro ao fazer login:', error.response?.data?.message || error.message);
+      setError('Credenciais inválidas. Verifique seu email e senha.');
     }
+  };
+
+  const handleBack = () => {
+    navigate('/');
   };
 
   return (
@@ -72,9 +71,8 @@ const navigate = useNavigate();
             />
           </div>
           <div className="text-center">
-            <button type="submit" className="btn btn-primary">
-              Entrar
-            </button>
+            <button type="button" onClick={handleBack} className="btn btn-secondary">Voltar</button>
+            <button type="submit" className="btn btn-primary me-2">Entrar</button>
           </div>
         </form>
       </div>
