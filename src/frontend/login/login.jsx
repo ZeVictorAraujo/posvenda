@@ -39,7 +39,7 @@ function Login() {
   };
 
   return (
-    <div className="container-fluid d-flex align-items-center justify-content-center vh-100 bg-dark text-white">
+    <div className="container-fluid d-flex align-items-center justify-content-center vh-100 text-white">
       <div className="card p-4 shadow custom-login-container">
         <h1 className="text-center mb-4">Login</h1>
         {error && <div className="alert alert-danger">{error}</div>}
@@ -71,8 +71,9 @@ function Login() {
             />
           </div>
           <div className="text-center">
-            <button type="button" onClick={handleBack} className="btn btn-secondary">Voltar</button>
+            
             <button type="submit" className="btn btn-primary me-2">Entrar</button>
+            <button type="button" onClick={handleBack} className="btn btn-secondary">Voltar</button>
           </div>
         </form>
       </div>
