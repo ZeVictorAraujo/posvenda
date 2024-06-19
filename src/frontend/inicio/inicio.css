@@ -1,0 +1,10 @@
+.btn-custom {
+    background-color: #6E00D8;
+    color: white;
+    border: none;
+  }
+  
+  .btn-custom:hover {
+    background-color: #5a00ad; /* Escurecendo um pouco no hover */
+  }
+  

@@ -1,0 +1,18 @@
+/* Login.css */
+.custom-login-container {
+    max-width: 500px; /* Largura máxima do container */
+    background-color: #ffffff; /* Cor de fundo do container */
+    border-radius: 10px; /* Borda arredondada */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Sombra */
+    width: 400px;
+    height: 400px;
+  }
+  
+  .custom-login-container h1 {
+    color: #333333; /* Cor do título */
+  }
+  
+  .custom-login-container .btn-primary {
+    background-color: #6E00D8; /* Cor de fundo do botão */
+    border: none;
+  }

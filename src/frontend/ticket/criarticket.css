@@ -1,0 +1,41 @@
+body{
+    background-color: #1f1f1f;
+}
+
+.custom-container {
+    padding: 50px; /* Preenchimento interno do container */
+    margin: 20px auto; /* Margem ao redor do container (auto para centralizar horizontalmente) */
+    border-radius: 10px; /* Borda arredondada */
+    max-width: 800px; /* Largura máxima do container */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra ao redor do container */
+  }
+  
+  .card {
+    max-width: 600px; /* Defina a largura máxima da card conforme necessário */
+    margin: auto; /* Centraliza a card horizontalmente */
+    border-radius: 10px; /* Borda arredondada */
+  }
+  
+  .btn-custom {
+    margin-top: 10px;
+    width: 200px;
+    margin-left: 10px;
+    background-color: #6E00D8; /* Cor de fundo personalizada para o botão */
+    border-color: #6E00D8; /* Cor da borda do botão */
+    color: #fff; /* Cor do texto do botão */
+  }
+  
+  .btn-custom:hover {
+    background-color: #5a00a6; /* Cor de fundo ao passar o mouse */
+    border-color: #5a00a6; /* Cor da borda ao passar o mouse */
+  }
+
+  .custom-toast-success {
+    background-color: #28a745;
+    color: #5a00a6;
+  }
+  
+  .custom-toast-error {
+    background-color: #dc3545;
+    color: #5a00a6;
+  }
