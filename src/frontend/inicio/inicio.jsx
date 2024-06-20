@@ -16,7 +16,7 @@ function Inicio() {
   };
  
   return (
-    <div className="container-fluid bg-dark text-white vh-100 d-flex flex-column align-items-center justify-content-center position-relative">
+    <div className="container-fluid text-white vh-100 d-flex flex-column align-items-center justify-content-center position-relative">
             <img src="logo.png" alt="Logo" width="150px" className="position-absolute top-0 start-50 translate-middle-x mt-4" />
       <div className="position-absolute top-0 end-0 m-4">
         <button className="btn btn-outline-light" onClick={handleAdmin}>
