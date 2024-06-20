@@ -1,7 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
-import { createTicket, getAllTicket, updateTicket, deleteTicket} from './controler.js';
+import { createTicket, getAllTicket, updateTicket, deleteTicket, updateTicketStatus} from './controler.js';
 import { loginUser } from './authController.js';
 
 const app = express();
@@ -34,6 +34,7 @@ app.get('/ticket', getAllTicket);
 app.post('/ticket', createTicket);
 app.put('/ticket/:id', updateTicket);
 app.delete('/ticket/:id', verifyToken, deleteTicket);
+app.put('/ticket/:id', updateTicketStatus);
 
 app.listen(3000, () => {
     console.log(`Servidor funcionando na porta 3000`);

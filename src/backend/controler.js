@@ -1,5 +1,5 @@
 import connection from './db.js';
-import {update, deletePes} from './model.js'
+import {update, deleteTick} from './model.js'
 import jwt from 'jsonwebtoken';
 import { findUserByEmailAndPassword } from './userService.js';
 
@@ -15,7 +15,7 @@ export const getAllTicket = (req, res) => {
 
 export const createTicket = (req, res) => {
   const { nome, produto, data, whatsapp, mensagem } = req.body;
-  const query = 'INSERT INTO ticket (nome, produto, data, whatsapp, mensagem, ativo) VALUES (?, ?, ?, ?, ?, 1)';
+  const query = 'INSERT INTO ticket (nome, produto, data, whatsapp, mensagem, ativo, status) VALUES (?, ?, ?, ?, ?, 1, 1)';
   connection.query(query, [nome, produto, data, whatsapp, mensagem ], (err, results) => {
     if (err) {
       res.status(500).json({ message: err.message });
@@ -39,7 +39,7 @@ export async function updateTicket(req, res){
 
 export async function deleteTicket(req, res){
   const { id } = req.params;
-  deletePes(id, (err, result) => {
+  deleteTick(id, (err, result) => {
     if (err) {
       res.status(500).json({error: err.message});
       return;
@@ -68,4 +68,24 @@ export const loginUser = async (req, res) => {
       console.error('Erro ao fazer login:', error);
       res.status(500).json({ message: 'Erro interno no servidor' });
   }
+};
+
+export const updateTicketStatus = (req, res) => {
+  const { id } = req.params;
+  const { novoStatus } = req.body;
+
+  const query = 'UPDATE ticket SET status = ? WHERE id = ?';
+  connection.query(query, [novoStatus, id], (err, result) => {
+    if (err) {
+      console.error('Erro ao atualizar status do ticket:', err);
+      res.status(500).json({ error: 'Erro interno ao atualizar status do ticket.' });
+      return;
+    }
+
+    if (result.affectedRows > 0) {
+      res.json({ message: `Status do ticket com ID ${id} atualizado com sucesso.` });
+    } else {
+      res.status(404).json({ error: `Ticket com ID ${id} não encontrado.` });
+    }
+  });
 };

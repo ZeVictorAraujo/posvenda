@@ -1,3 +1,5 @@
+// Dashboard.js
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -62,21 +64,48 @@ function Dashboard() {
     window.open(whatsappUrl, '_blank');
   };
 
-  const handleEditStatus = (id) => {
-    console.log('Editar status do ticket com ID:', id);
+  const handleEditStatus = async (id, novoStatus) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        await axios.put(`http://localhost:3000/ticket/${id}`, { novoStatus }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        // Atualizar localmente o status do ticket
+        const updatedTickets = tickets.map(ticket => {
+          if (ticket.id === id) {
+            return { ...ticket, status: novoStatus };
+          }
+          return ticket;
+        });
+
+        setTickets(updatedTickets);
+
+      } catch (error) {
+        console.error('Erro ao editar status do ticket:', error);
+      }
+    } else {
+      console.error('Token não encontrado. Usuário não autenticado.');
+    }
   };
 
   const handleDeleteTicket = async (id) => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        await axios.patch(`http://localhost:3000/ticket/${id}`, { ativo: 0 }, {
+        await axios.delete(`http://localhost:3000/ticket/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        // Atualizar a lista de tickets após a exclusão
-        setTickets(tickets.filter(ticket => ticket.idticket !== id));
+
+        // Remover localmente o ticket excluído da lista
+        setTickets(tickets.filter(ticket => ticket.id !== id));
+
       } catch (error) {
         console.error('Erro ao excluir ticket:', error);
       }
@@ -112,7 +141,7 @@ function Dashboard() {
 
       <div className="row mt-4">
         {tickets.map((ticket) => (
-          <div key={ticket.id} className="col-sm-6 col-md-4 mb-3">
+          <div key={ticket.id} className={`col-sm-6 col-md-4 mb-3 border-${ticket.status === 1 ? 'secondary' : ticket.status === 2 ? 'warning' : ticket.status === 3 ? 'success' : 'primary'}`}>
             <div className="card h-100">
               <div className="card-body">
                 <h5 className="card-title">{ticket.nome}</h5>
@@ -122,7 +151,6 @@ function Dashboard() {
                 <p className="card-text">Mensagem: {ticket.mensagem}</p>
                 <div className="d-flex justify-content-between">
                   <button onClick={() => handleRespond(ticket)} className="btn btn-primary btn-sm">Responder</button>
-                  <button onClick={() => handleEditStatus(ticket.id)} className="btn btn-secondary btn-sm">Editar Status</button>
                   <button onClick={() => handleDeleteTicket(ticket.id)} className="btn btn-danger btn-sm">Excluir</button>
                 </div>
               </div>

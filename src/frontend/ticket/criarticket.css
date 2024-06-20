@@ -8,6 +8,7 @@ body{
     border-radius: 10px; /* Borda arredondada */
     max-width: 800px; /* Largura máxima do container */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra ao redor do container */
+    width: 900px;
   }
   
   .card {
